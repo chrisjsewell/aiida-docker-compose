@@ -6,16 +6,27 @@ on:
     - 'docker-push-v*'
 
 jobs:
+
   build:
+    strategy:
+      matrix:
+        requirements: ["1.2.1", "1.2.1-atomic"]
+    
+      fail-fast: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        REQUIREMENTS: ${{ matrix.requirements }}
       with:
         name: chrisjsewell/aiida-core
         dockerfile: builds/aiida-core/Dockerfile
         context: builds/aiida-core/
         username: chrisjsewell
         password: ${{ secrets.DOCKER_HUB }}
+        buildargs: REQUIREMENTS
+        tags: ${{ matrix.requirements }}
+        cache: true
