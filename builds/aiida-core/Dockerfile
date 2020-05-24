@@ -24,8 +24,8 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip3 install -U setuptools wheel
-COPY requirements.${REQUIREMENTS}.txt .
-RUN pip3 install -r requirements.${REQUIREMENTS}.txt
+COPY requirements.${DOCKER_TAG}.txt .
+RUN pip3 install -r requirements.${DOCKER_TAG}.txt
 
 FROM phusion/baseimage:0.11 AS build-image
 # Ubuntu 18.04 LTS image that correctly manages daemon processes
