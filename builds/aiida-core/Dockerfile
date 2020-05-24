@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # TODO requires https://stackoverflow.com/a/57642085/5033292
 # then could use python${PYTHON_VERSION}
 
-ARG REQUIREMENTS="1.2.1"
+ARG DOCKER_TAG="1.2.1"
 
 RUN /sbin/install_clean \
     python3 \

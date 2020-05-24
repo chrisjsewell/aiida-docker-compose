@@ -22,14 +22,14 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       env:
-        REQUIREMENTS: ${{ matrix.requirements }}
+        DOCKER_TAG: ${{ matrix.requirements }}
       with:
         name: chrisjsewell/aiida-core
         dockerfile: builds/aiida-core/Dockerfile
         context: builds/aiida-core/
         username: chrisjsewell
         password: ${{ secrets.DOCKER_HUB }}
-        buildargs: REQUIREMENTS
+        buildargs: DOCKER_TAG
         tags: ${{ matrix.requirements }}
         cache: true
 
@@ -52,7 +52,7 @@ jobs:
         QE_GIT_TAG: ${{ matrix.qe_version }}
         QE_MAKE: ${{ matrix.qe_make }}
       with:
-        name: chrisjsewell/quantum-espresso/ubuntu
+        name: chrisjsewell/quantum-espresso
         dockerfile: builds/quantum-espresso/Dockerfile
         context: builds/quantum-espresso/
         username: chrisjsewell
