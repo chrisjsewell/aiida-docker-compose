@@ -52,8 +52,6 @@ services:
   computer:
     image: chrisjsewell/quantum-espresso:qe-6.5-pw
     container_name: computer
-    # stop container from closing
-    command: tail -f /dev/null
 
 volumes:
   aiida-postgres-db:

@@ -30,8 +30,13 @@ RUN mkdir /tmp/libs && \
     cp /usr/local/bin/*.x /tmp/bin/
 
 
-FROM ubuntu:18.04 AS build-image
+FROM phusion/baseimage:0.11 AS build-image
+# Ubuntu 18.04 LTS image that correctly manages daemon processes
+# see: https://github.com/phusion/baseimage-docker
 LABEL maintainer="AiiDA Team"
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
 RUN apt-get update && apt-get install -y \
     openmpi-bin \
@@ -47,9 +52,8 @@ ENV OMPI_MCA_btl_vader_single_copy_mechanism=none
 
 # set user profile
 ARG NB_USER="qeuser"
-RUN useradd -m -s /bin/bash ${NB_USER}
-RUN mkdir -p /home/${NB_USER}/ && \
-    chown ${NB_USER}:${NB_USER} /home/${NB_USER}
+RUN adduser --disabled-password --home /home/${NB_USER} --shell /bin/bash --gecos "" ${NB_USER}
+
 USER ${NB_USER}
 WORKDIR "/home/${NB_USER}/"
 
@@ -57,3 +61,6 @@ COPY --chown=qeuser:qeuser examples examples
 
 # allow ssh connections
 EXPOSE 22
+
+USER root
+COPY startup.sh /etc/my_init.d/40_startup.sh
