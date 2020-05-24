@@ -1,5 +1,5 @@
-![DockerHub1](https://img.shields.io/docker/v/chrisjsewell/aiida-core?label=DockerHub)
-![DockerHub2](https://img.shields.io/docker/v/chrisjsewell/quantum-espresso?label=DockerHub)
+[![DockerHub1](https://img.shields.io/badge/DockerHub-aiida--core-blue)](https://hub.docker.com/r/chrisjsewell/aiida-core/tags)
+[![DockerHub2](https://img.shields.io/badge/DockerHub-quantum--espresso-blue)](https://hub.docker.com/r/chrisjsewell/quantum-espresso/tags)
 
 # aiida-compose-docker
 
@@ -147,3 +147,7 @@ Password for user pguser:
            |        |          |             |             | pguser=CTc/pguser
 (5 rows)
 ```
+
+## Development Notes
+
+- https://runkiss.blogspot.com/2019/12/use-cache-in-docker-multi-stage-build.html
