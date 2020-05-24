@@ -22,14 +22,14 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       env:
-        DOCKER_TAG: ${{ matrix.requirements }}
+        REQUIREMENTS: ${{ matrix.requirements }}
       with:
         name: chrisjsewell/aiida-core
         dockerfile: builds/aiida-core/Dockerfile
         context: builds/aiida-core/
         username: chrisjsewell
         password: ${{ secrets.DOCKER_HUB }}
-        buildargs: DOCKER_TAG
+        buildargs: REQUIREMENTS
         tags: ${{ matrix.requirements }}
         cache: true
 

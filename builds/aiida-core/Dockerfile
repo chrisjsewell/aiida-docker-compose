@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # TODO requires https://stackoverflow.com/a/57642085/5033292
 # then could use python${PYTHON_VERSION}
 
-ARG DOCKER_TAG="1.2.1"
+ARG REQUIREMENTS="1.2.1"
 
 RUN /sbin/install_clean \
     python3 \
@@ -24,8 +24,8 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip3 install -U setuptools wheel
-COPY requirements.${DOCKER_TAG}.txt .
-RUN pip3 install -r requirements.${DOCKER_TAG}.txt
+COPY requirements.${REQUIREMENTS}.txt .
+RUN pip3 install -r requirements.${REQUIREMENTS}.txt
 
 FROM phusion/baseimage:0.11 AS build-image
 # Ubuntu 18.04 LTS image that correctly manages daemon processes
