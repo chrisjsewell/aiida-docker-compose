@@ -7,14 +7,16 @@ on:
 
 jobs:
 
-  build:
+  build-aiida-core:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     strategy:
       matrix:
         requirements: ["1.2.1", "1.2.1-atomic"]
-    
-      fail-fast: true
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+      fail-fast: false
+
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
@@ -29,4 +31,32 @@ jobs:
         password: ${{ secrets.DOCKER_HUB }}
         buildargs: REQUIREMENTS
         tags: ${{ matrix.requirements }}
+        cache: true
+
+  build-qe:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        qe_version: ["qe-6.5"]
+        qe_make: ["pw", "pwall"]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        QE_GIT_TAG: ${{ matrix.qe_version }}
+        QE_MAKE: ${{ matrix.qe_make }}
+      with:
+        name: chrisjsewell/quantum-espresso/ubuntu
+        dockerfile: builds/quantum-espresso/Dockerfile
+        context: builds/quantum-espresso/
+        username: chrisjsewell
+        password: ${{ secrets.DOCKER_HUB }}
+        buildargs: QE_GIT_TAG,QE_MAKE
+        tags: ${{ matrix.qe_version }}-${{ matrix.qe_make }}
         cache: true
