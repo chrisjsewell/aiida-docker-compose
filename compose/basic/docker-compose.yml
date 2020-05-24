@@ -33,14 +33,14 @@ services:
     restart: always
 
   core:
-    image: chrisjsewell/aiida-core:1.2.1-atomic
+    image: chrisjsewell/aiida-core:1.2.1
     container_name: aiida-core
     environment:
       RMQHOST: messaging
       TZ: Europe/Zurich
     volumes:
       - "aiida-object-store:/home/aiida/.aiida"
-      # optional 
+      # optional
       # - "aiida-python-venv:/opt/venv"
       # - "./.bash_history:/home/aiida/.bash_history"
       # (make sure the .bash_history file is already created locally)

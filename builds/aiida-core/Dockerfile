@@ -80,5 +80,6 @@ RUN reentry scan
 # make aiida configuration and object store persistent
 VOLUME [ "/home/${NB_USER}/.aiida" ]
 
+# TODO can phusion start as non-root
 USER root
 COPY startup.sh /etc/my_init.d/40_startup.sh

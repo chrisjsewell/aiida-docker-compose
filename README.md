@@ -6,12 +6,13 @@
 Docker service infrastructure for running AiiDA
 
 ```console
+$ cd compose/basic
 $ docker-compose up -d
-Creating aiida-rmq ... 
-Creating aiida-database ... 
+Creating aiida-rmq ...
+Creating aiida-database ...
 Creating aiida-rmq
 Creating aiida-database ... done
-Creating aiida-core ... 
+Creating aiida-core ...
 Creating aiida-core ... done
 ```
 
@@ -41,7 +42,7 @@ NETWORK ID          NAME                         DRIVER              SCOPE
 
 ```console
 $ psql postgres -h localhost -p 5432 -U pguser -c "\l"
-Password for user pguser: 
+Password for user pguser:
                               List of databases
    Name    | Owner  | Encoding |  Collate   |   Ctype    | Access privileges
 -----------+--------+----------+------------+------------+-------------------
@@ -133,14 +134,14 @@ aiida@951715c4ed5b:~$ verdi status
 
 ```console
 $ psql aiida_db -h localhost -p 5432 -U pguser -c "\l"
-Password for user pguser: 
+Password for user pguser:
                                List of databases
-   Name    | Owner  | Encoding |   Collate   |    Ctype    | Access privileges 
+   Name    | Owner  | Encoding |   Collate   |    Ctype    | Access privileges
 -----------+--------+----------+-------------+-------------+-------------------
  aiida_db  | aiida  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/aiida        +
            |        |          |             |             | aiida=CTc/aiida
- pguser    | pguser | UTF8     | en_US.utf8  | en_US.utf8  | 
- postgres  | pguser | UTF8     | en_US.utf8  | en_US.utf8  | 
+ pguser    | pguser | UTF8     | en_US.utf8  | en_US.utf8  |
+ postgres  | pguser | UTF8     | en_US.utf8  | en_US.utf8  |
  template0 | pguser | UTF8     | en_US.utf8  | en_US.utf8  | =c/pguser        +
            |        |          |             |             | pguser=CTc/pguser
  template1 | pguser | UTF8     | en_US.utf8  | en_US.utf8  | =c/pguser        +
@@ -150,4 +151,8 @@ Password for user pguser:
 
 ## Development Notes
 
-- https://runkiss.blogspot.com/2019/12/use-cache-in-docker-multi-stage-build.html
+- Multi-stage build caching:
+  - https://github.com/docker/hub-feedback/issues/1918
+  - https://github.com/moby/moby/issues/34715
+  - https://github.com/elgohr/Publish-Docker-Github-Action/issues/87#issuecomment-633250342
+  - https://runkiss.blogspot.com/2019/12/use-cache-in-docker-multi-stage-build.html

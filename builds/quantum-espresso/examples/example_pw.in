@@ -1,6 +1,6 @@
 &CONTROL
   calculation = 'scf',
-  pseudo_dir = '.'
+  pseudo_dir = '/home/qeuser/examples'
 /
 &SYSTEM
   ibrav = 2,

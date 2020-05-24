@@ -1,0 +1,65 @@
+version: '3.4'
+
+services:
+
+  database:
+    image: postgres:12.3
+    container_name: aiida-database
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432 # main port
+    volumes:
+      - "aiida-postgres-db:/var/lib/postgresql/data"
+    # optionally allow for query statistics logging
+    # command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all
+    restart: always
+
+  messaging:
+    image: rabbitmq:3.8.3-management
+    container_name: aiida-rmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      # - 5672:5672 # main port
+      - 15672:15672 # management access
+    volumes:
+      - "aiida-rmq-data:/var/lib/rabbitmq/"
+      # optional
+      # - "aiida-rmq-config:/etc/rabbitmq/"
+      # - "aiida-rmq-log:/var/log/rabbitmq/"
+    restart: always
+
+  core:
+    image: chrisjsewell/aiida-core:qe-3.0.0
+    container_name: aiida-core
+    environment:
+      RMQHOST: messaging
+      TZ: Europe/Zurich
+    volumes:
+      - "aiida-object-store:/home/aiida/.aiida"
+      # optional
+      # - "aiida-python-venv:/opt/venv"
+      # - "./.bash_history:/home/aiida/.bash_history"
+      # (make sure the .bash_history file is already created locally)
+    depends_on:
+      - database
+      - messaging
+      - computer
+
+  computer:
+    image: chrisjsewell/quantum-espresso:qe-6.5-pw
+    container_name: computer
+    # stop container from closing
+    command: tail -f /dev/null
+
+volumes:
+  aiida-postgres-db:
+    name: aiida-postgres-db
+  aiida-rmq-data:
+    name: aiida-rmq-data
+  aiida-object-store:
+    name: aiida-object-store
+  # aiida-python-venv:

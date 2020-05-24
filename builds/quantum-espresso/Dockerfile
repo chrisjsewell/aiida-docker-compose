@@ -53,4 +53,7 @@ RUN mkdir -p /home/${NB_USER}/ && \
 USER ${NB_USER}
 WORKDIR "/home/${NB_USER}/"
 
-COPY --chown=qeuser:qeuser example example
+COPY --chown=qeuser:qeuser examples examples
+
+# allow ssh connections
+EXPOSE 22
