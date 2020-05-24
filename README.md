@@ -1,3 +1,6 @@
+![DockerHub1](https://img.shields.io/docker/v/chrisjsewell/aiida-core?label=DockerHub)
+![DockerHub2](https://img.shields.io/docker/v/chrisjsewell/quantum-espresso?label=DockerHub)
+
 # aiida-compose-docker
 
 Docker service infrastructure for running AiiDA
