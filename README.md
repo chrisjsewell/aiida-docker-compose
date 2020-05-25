@@ -6,6 +6,8 @@
 This package provides container images and [Docker compose](https://docs.docker.com/compose/) files,
 for running AiiDA as a multi-container application.
 
+<img src="https://raw.githubusercontent.com/chrisjsewell/aiida-docker-compose/master/uml-diagram.png" width="500" alt="uml diagram"></img>
+
 ## Introduction
 
 This approach is an alternative to the current [aiidateam/aiida-core](https://hub.docker.com/r/aiidateam/aiida-core) image,
@@ -29,9 +31,9 @@ rabbitmq                        3.8.3-management     867da7fcdf92        4 days 
 postgres                        12.3                 adf2b126dda8        9 days ago          313MB
 ```
 
+## Using the system: basic
 
-
-https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
+First spin-up the docker system:
 
 ```console
 $ cd compose/basic
@@ -44,6 +46,10 @@ Creating aiida-core ...
 Creating aiida-core ... done
 ```
 
+Tip: [VSCode-Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) provides a nice UI for visualising Docker systems.
+
+You will now have three containers running and connected over a private networks:
+
 ```console
 $ docker-compose ps
      Name                   Command               State                           Ports
@@ -55,6 +61,14 @@ aiida-rmq        docker-entrypoint.sh rabbi ...   Up      15671/tcp, 0.0.0.0:156
 ```
 
 ```console
+$ docker network ls
+NETWORK ID          NAME                         DRIVER              SCOPE
+63b22ad9aa35        aiidadockercompose_default   bridge              local
+```
+
+The containers are also connected to three volumes, which store data that will persist during container destruction/creation.
+
+```console
 $ docker volume list
 DRIVER              VOLUME NAME
 local               aiida-object-store
@@ -62,11 +76,7 @@ local               aiida-postgres-db
 local               aiida-rmq-data
 ```
 
-```console
-$ docker network ls
-NETWORK ID          NAME                         DRIVER              SCOPE
-63b22ad9aa35        aiidadockercompose_default   bridge              local
-```
+The postgres database is exposed to the localhost and can be accessed by:
 
 ```console
 $ psql postgres -h localhost -p 5432 -U pguser -c "\l"
@@ -82,6 +92,9 @@ Password for user pguser:
            |        |          |            |            | pguser=CTc/pguser
 (4 rows)
 ```
+
+To create an AiiDA profile (populating the `aiida-postgres-db` and `aiida-object-store`),
+login to the `core` container then:
 
 ```console
 $ docker exec -it --user aiida aiida-core /bin/bash
@@ -105,6 +118,8 @@ aiida@951715c4ed5b:~$ verdi status
  ✗ daemon:      The daemon is not running
 ```
 
+The database will now show:
+
 ```console
 $ psql aiida_db -h localhost -p 5432 -U pguser -c "\l"
 Password for user pguser:
@@ -122,16 +137,29 @@ Password for user pguser:
 (5 rows)
 ```
 
+To spin-down the system:
+
 ```console
 $ docker-compose down
+Stopping aiida-core     ... done
+Stopping aiida-rmq      ... done
+Stopping aiida-database ... done
+Removing aiida-core     ... done
+Removing aiida-rmq      ... done
+Removing aiida-database ... done
+Removing network qedirect_default
 ```
 
-## Quantum Espresso (Direct)
+## Add a computer: Quantum Espresso (Direct)
+
+To add a computer to the above system:
 
 ```console
 $ cd compose/qe-direct
 $ docker-compose up -d
 ```
+
+You can carry out MPI runs directly:
 
 ```console
 $ docker exec -it --user qeuser computer mpiexec -np 2 pw.x -i examples/example_pw.in
@@ -153,6 +181,10 @@ $ docker exec -it --user qeuser computer mpiexec -np 2 pw.x -i examples/example_
 =------------------------------------------------------------------------------=
 ```
 
+To add the computer and code to the AiiDA profile,
+an additional folder is mounted to both the `computer` and `core` containers,
+containing SSH keys and configuration to set up the nodes:
+
 ```console
 $ docker exec -it --user aiida aiida-core /bin/bash
 $ verdi computer setup --config ssh_key/aiida-computer-setup.yml
@@ -169,6 +201,8 @@ $ verdi code setup --config ssh_key/aiida-code-setup.yml
 Success: Code<1> qe-direct@qe_computer created
 ```
 
+To add a pseudo-potential family to the profile:
+
 ```console
 $ aiida-sssp install -v 1.1 -f PBE -p efficiency
 Info: downloading selected pseudo potentials archive...  [OK]
@@ -180,6 +214,8 @@ $ verdi group list -T sssp.family
 ----  -----------------------  -------------  ------------
    3  SSSP/1.1/PBE/efficiency  sssp.family    my@email.com
 ```
+
+To run an example calculation:
 
 ```console
 $ verdi export inspect ssh_key/qe-pw-test.aiida
@@ -260,6 +296,18 @@ remote_folder       103  RemoteData
 retrieved           104  FolderData
 ```
 
+```console
+$ docker-compose down
+Stopping aiida-core     ... done
+Stopping computer       ... done
+Stopping aiida-rmq      ... done
+Stopping aiida-database ... done
+Removing aiida-core     ... done
+Removing computer       ... done
+Removing aiida-rmq      ... done
+Removing aiida-database ... done
+Removing network qedirect_default
+```
 
 ## Development Notes
 
