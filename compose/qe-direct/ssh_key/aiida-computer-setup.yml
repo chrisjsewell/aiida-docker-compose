@@ -1,0 +1,16 @@
+label: qe_computer
+hostname: computer
+description: the QE container
+transport: ssh
+scheduler: direct
+shebang: "#!/bin/bash"
+work_dir: "/home/qeuser/work_dir"
+mpirun_command: mpiexec -np {tot_num_mpiprocs}
+mpiprocs_per_machine: 1
+# TODO the image should be fixed so this is not needed
+# these are set in the Dockerfile, but they are not set when called by aiida
+prepend_text: |
+  export OMPI_MCA_btl_vader_single_copy_mechanism=none
+  export LD_LIBRARY_PATH="/usr/local/lib"
+append_text: ""
+non_interactive: true

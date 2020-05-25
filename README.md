@@ -5,6 +5,8 @@
 
 Docker service infrastructure for running AiiDA
 
+https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
+
 ```console
 $ cd compose/basic
 $ docker-compose up -d
@@ -66,62 +68,7 @@ Operations to perform:
   Apply all migrations: auth, contenttypes, db
 Running migrations:
   Applying contenttypes.0001_initial... OK
-  Applying contenttypes.0002_remove_content_type_name... OK
-  Applying auth.0001_initial... OK
-  Applying auth.0002_alter_permission_name_max_length... OK
-  Applying auth.0003_alter_user_email_max_length... OK
-  Applying auth.0004_alter_user_username_opts... OK
-  Applying auth.0005_alter_user_last_login_null... OK
-  Applying auth.0006_require_contenttypes_0002... OK
-  Applying auth.0007_alter_validators_add_error_messages... OK
-  Applying auth.0008_alter_user_username_max_length... OK
-  Applying auth.0009_alter_user_last_name_max_length... OK
-  Applying auth.0010_alter_group_name_max_length... OK
-  Applying auth.0011_update_proxy_permissions... OK
-  Applying db.0001_initial... OK
-  Applying db.0002_db_state_change... OK
-  Applying db.0003_add_link_type... OK
-  Applying db.0004_add_daemon_and_uuid_indices... OK
-  Applying db.0005_add_cmtime_indices... OK
-  Applying db.0006_delete_dbpath... OK
-  Applying db.0007_update_linktypes... OK
-  Applying db.0008_code_hidden_to_extra... OK
-  Applying db.0009_base_data_plugin_type_string... OK
-  Applying db.0010_process_type... OK
-  Applying db.0011_delete_kombu_tables... OK
-  Applying db.0012_drop_dblock... OK
-  Applying db.0013_django_1_8... OK
-  Applying db.0014_add_node_uuid_unique_constraint... OK
-  Applying db.0015_invalidating_node_hash... OK
-  Applying db.0016_code_sub_class_of_data... OK
-  Applying db.0017_drop_dbcalcstate... OK
-  Applying db.0018_django_1_11... OK
-  Applying db.0019_migrate_builtin_calculations... OK
-  Applying db.0020_provenance_redesign... OK
-  Applying db.0021_dbgroup_name_to_label_type_to_type_string... OK
-  Applying db.0022_dbgroup_type_string_change_content... OK
-  Applying db.0023_calc_job_option_attribute_keys... OK
-  Applying db.0024_dblog_update... OK
-  Applying db.0025_move_data_within_node_module... OK
-  Applying db.0026_trajectory_symbols_to_attribute... OK
-  Applying db.0027_delete_trajectory_symbols_array... OK
-  Applying db.0028_remove_node_prefix... OK
-  Applying db.0029_rename_parameter_data_to_dict... OK
-  Applying db.0030_dbnode_type_to_dbnode_node_type... OK
-  Applying db.0031_remove_dbcomputer_enabled... OK
-  Applying db.0032_remove_legacy_workflows... OK
-  Applying db.0033_replace_text_field_with_json_field... OK
-  Applying db.0034_drop_node_columns_nodeversion_public... OK
-  Applying db.0035_simplify_user_model... OK
-  Applying db.0036_drop_computer_transport_params... OK
-  Applying db.0037_attributes_extras_settings_json... OK
-  Applying db.0038_data_migration_legacy_job_calculations... OK
-  Applying db.0039_reset_hash... OK
-  Applying db.0040_data_migration_legacy_process_attributes... OK
-  Applying db.0041_seal_unsealed_processes... OK
-  Applying db.0042_prepare_schema_reset... OK
-  Applying db.0043_default_link_label... OK
-  Applying db.0044_dbgroup_type_string... OK
+  ...
 Success: database migration completed.
 aiida@951715c4ed5b:~$ verdi status
  ✓ config dir:  /home/aiida/.aiida
@@ -149,6 +96,145 @@ Password for user pguser:
 (5 rows)
 ```
 
+```console
+$ docker-compose down
+```
+
+## Quantum Espresso (Direct)
+
+```console
+$ cd compose/qe-direct
+$ docker-compose up -d
+```
+
+```console
+$ docker exec -it --user qeuser computer mpiexec -np 2 pw.x -i examples/example_pw.in
+
+     Program PWSCF v.6.5 starts on 24May2020 at 17:23:55
+
+     This program is part of the open-source Quantum ESPRESSO suite
+     for quantum simulation of materials; please cite
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 21 395502 (2009);
+         "P. Giannozzi et al., J. Phys.:Condens. Matter 29 465901 (2017);
+          URL http://www.quantum-espresso.org",
+     in publications or presentations arising from this work. More details at
+     http://www.quantum-espresso.org/quote
+
+     Parallel version (MPI), running on     2 processors
+     ...
+=------------------------------------------------------------------------------=
+   JOB DONE.
+=------------------------------------------------------------------------------=
+```
+
+```console
+$ docker exec -it --user aiida aiida-core /bin/bash
+$ verdi computer setup --config ssh_key/aiida-computer-setup.yml
+$ verdi computer configure ssh qe_computer --config ssh_key/aiida-computer-config.yml
+$ verdi computer test qe_computer
+Info: Testing computer<qe_computer> for user<my@email.com>...
+* Opening connection... [OK]
+* Checking for spurious output... [OK]
+* Getting number of jobs from scheduler... [OK]: 5 jobs found in the queue
+* Determining remote user name... [OK]: qeuser
+* Creating and deleting temporary file... [OK]
+Success: all 5 tests succeeded
+$ verdi code setup --config ssh_key/aiida-code-setup.yml
+Success: Code<1> qe-direct@qe_computer created
+```
+
+```console
+$ aiida-sssp install -v 1.1 -f PBE -p efficiency
+Info: downloading selected pseudo potentials archive...  [OK]
+Info: downloading selected pseudo potentials metadata...  [OK]
+Info: unpacking archive and parsing pseudos...  [OK]
+Success: installed `SSSP/1.1/PBE/efficiency` containing 85 pseudo potentials
+$ verdi group list -T sssp.family
+  PK  Label                    Type string    User
+----  -----------------------  -------------  ------------
+   3  SSSP/1.1/PBE/efficiency  sssp.family    my@email.com
+```
+
+```console
+$ verdi export inspect ssh_key/qe-pw-test.aiida
+$ verdi node show 5eb94d2d-2f58-4769-9f74-80c223791077 a63f51e4-4a86-4271-bb30-ad69c1e1a7e2 ea01fb5e-9098-481c-b46e-57cfa60a77cc
+Property     Value
+-----------  ------------------------------------
+type         StructureData
+pk           2
+uuid         5eb94d2d-2f58-4769-9f74-80c223791077
+label
+description
+ctime        2020-04-29 01:33:56.285489+00:00
+mtime        2020-04-29 01:36:59.366312+00:00
+Property     Value
+-----------  ------------------------------------
+type         KpointsData
+pk           3
+uuid         a63f51e4-4a86-4271-bb30-ad69c1e1a7e2
+label
+description
+ctime        2020-04-29 01:38:20.385837+00:00
+mtime        2020-04-29 01:39:44.531806+00:00
+Property     Value
+-----------  ------------------------------------
+type         Dict
+pk           4
+uuid         ea01fb5e-9098-481c-b46e-57cfa60a77cc
+label
+description
+ctime        2020-04-29 01:40:54.281852+00:00
+mtime        2020-04-29 01:41:02.971497+00:00
+```
+
+```console
+$ verdi daemon start
+Starting the daemon... RUNNING
+$ verdi run ssh_key/run_example.py
+pk= 102
+$ verdi process watch 102
+Info: watching for broadcasted messages, press CTRL+C to stop...
+Process<102> [state_changed.waiting.waiting|--]: No message specified
+Process<102> [state_changed.waiting.waiting|--]: No message specified
+Process<102> [state_changed.waiting.waiting|--]: No message specified
+Process<102> [state_changed.waiting.running|--]: No message specified
+Process<102> [state_changed.running.finished|--]: No message specified
+^C
+Info: received interrupt, exiting...
+
+Aborted!
+$ verdi process show 102
+Property     Value
+-----------  ------------------------------------
+type         PwCalculation
+state        Finished [0]
+pk           102
+uuid         1768a99c-c964-4ead-9b27-ed49c0a5a94c
+label
+description
+ctime        2020-05-25 09:59:38.544190+00:00
+mtime        2020-05-25 10:01:47.948854+00:00
+computer     [1] qe_computer
+
+Inputs      PK    Type
+----------  ----  -------------
+pseudos
+    Si      45    UpfData
+code        101   Code
+kpoints     3     KpointsData
+parameters  4     Dict
+structure   2     StructureData
+
+Outputs              PK  Type
+-----------------  ----  --------------
+output_band         105  BandsData
+output_parameters   107  Dict
+output_trajectory   106  TrajectoryData
+remote_folder       103  RemoteData
+retrieved           104  FolderData
+```
+
+
 ## Development Notes
 
 - Multi-stage build caching:
@@ -156,3 +242,25 @@ Password for user pguser:
   - https://github.com/moby/moby/issues/34715
   - https://github.com/elgohr/Publish-Docker-Github-Action/issues/87#issuecomment-633250342
   - https://runkiss.blogspot.com/2019/12/use-cache-in-docker-multi-stage-build.html
+
+- could potentially wait until database, rabbitmq ready, either
+  - netstat -an | grep 5672 > /dev/null; if [ 0 != $? ]; then echo 1; fi;
+  - nc -vz database 5432 | grep open && nc -vz messaging 5672 | grep open
+
+- use secrets for injecting ssh keys? https://medium.com/@francesco.camillini/inject-ssh-private-key-securely-into-a-docker-container-8403b72ab9e3
+
+- timezones in aiida-core could maybe be improved (need to be set for tzlocal to work)
+  - https://medium.com/developer-space/be-careful-while-playing-docker-about-timezone-configuration-e7a2217e9b76
+
+Image sizes (un-compressed):
+
+```console
+$ docker image list
+REPOSITORY                      TAG                  IMAGE ID            CREATED             SIZE
+aiidateam/aiida-core            latest               547a467941da        4 days ago          1.72GB
+chrisjsewell/aiida-core         1.2.1                d21f8a58855e        12 hours ago        482MB
+chrisjsewell/aiida-core         qe-3.0.0             2f1f86f77fbc        15 hours ago        832MB
+rabbitmq                        3.8.3-management     867da7fcdf92        4 days ago          181MB
+postgres                        12.3                 adf2b126dda8        9 days ago          313MB
+chrisjsewell/quantum-espresso   qe-6.5-pw            7553db6a0972        12 hours ago        277MB
+```

@@ -32,14 +32,27 @@ services:
       # - "aiida-rmq-log:/var/log/rabbitmq/"
     restart: always
 
+  computer:
+    image: chrisjsewell/quantum-espresso:qe-6.5-pw
+    container_name: computer
+    volumes:
+      # add ssh key, shared between core and computer containers
+      - "./ssh_key:/home/qeuser/.ssh"
+
   core:
     image: chrisjsewell/aiida-core:qe-3.0.0
     container_name: aiida-core
     environment:
       RMQHOST: messaging
       TZ: Europe/Zurich
+      KNOWN_HOSTNAMES: computer
     volumes:
       - "aiida-object-store:/home/aiida/.aiida"
+      # add ssh key, shared between core and computer containers
+      - "./ssh_key:/home/aiida/ssh_key"
+      # authenticate computer at startup
+      # see: https://github.com/phusion/baseimage-docker#running-scripts-during-container-startup
+      - "./ssh_key/add-known-hosts.sh:/etc/rc.local"
       # optional
       # - "aiida-python-venv:/opt/venv"
       # - "./.bash_history:/home/aiida/.bash_history"
@@ -48,10 +61,6 @@ services:
       - database
       - messaging
       - computer
-
-  computer:
-    image: chrisjsewell/quantum-espresso:qe-6.5-pw
-    container_name: computer
 
 volumes:
   aiida-postgres-db:

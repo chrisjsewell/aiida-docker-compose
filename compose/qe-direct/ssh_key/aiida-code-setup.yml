@@ -1,0 +1,9 @@
+label: qe-direct
+description: Direct connection to Quantum Espresso code
+input_plugin: quantumespresso.pw
+computer: qe_computer
+on_computer: true
+remote_abs_path: "/usr/local/bin/pw.x"
+prepend-text: ""
+append-text: ""
+non_interactive: true

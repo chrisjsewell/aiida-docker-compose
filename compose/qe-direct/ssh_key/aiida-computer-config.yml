@@ -1,0 +1,7 @@
+username: qeuser
+port: 22
+look_for_keys: false
+key_filename: "/home/aiida/ssh_key/docker_key_rsa"
+timeout: 60
+safe_interval: 30
+non_interactive: true
