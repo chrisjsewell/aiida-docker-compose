@@ -1,7 +1,7 @@
 [![DockerHub1](https://img.shields.io/badge/DockerHub-aiida--core-blue)](https://hub.docker.com/r/chrisjsewell/aiida-core/tags)
 [![DockerHub2](https://img.shields.io/badge/DockerHub-quantum--espresso-blue)](https://hub.docker.com/r/chrisjsewell/quantum-espresso/tags)
 
-# aiida-compose-docker
+# aiida-docker-compose
 
 This package provides container images and [Docker compose](https://docs.docker.com/compose/) files,
 for running AiiDA as a multi-container application.
