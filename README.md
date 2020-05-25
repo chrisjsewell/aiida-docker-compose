@@ -93,6 +93,8 @@ Password for user pguser:
 (4 rows)
 ```
 
+You can also inspect the RabbitMQ process, using the browser based app at http://localhost:15672/.
+
 To create an AiiDA profile (populating the `aiida-postgres-db` and `aiida-object-store`),
 login to the `core` container then:
 
