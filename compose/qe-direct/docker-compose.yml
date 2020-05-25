@@ -34,7 +34,7 @@ services:
 
   computer:
     image: chrisjsewell/quantum-espresso:qe-6.5-pw
-    container_name: computer
+    container_name: qe-mpi
     volumes:
       # add ssh key, shared between core and computer containers
       - "./ssh_key:/home/qeuser/.ssh"

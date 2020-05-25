@@ -3,7 +3,33 @@
 
 # aiida-compose-docker
 
-Docker service infrastructure for running AiiDA
+This package provides container images and [Docker compose](https://docs.docker.com/compose/) files,
+for running AiiDA as a multi-container application.
+
+## Introduction
+
+This approach is an alternative to the current [aiidateam/aiida-core](https://hub.docker.com/r/aiidateam/aiida-core) image,
+which packages all services into one container.
+Although this works and has some benefits, it does diverge from a central design principle of docker containers:
+
+> "One service per container"
+
+The reasons for this are outlined [here](https://docs.docker.com/config/containers/multi-service_container/) and [here](https://devops.stackexchange.com/a/451). Some specific benefits are that:
+
+1. The responsibility for constructing/maintaining working RabbitMQ and PostgreSQL services are transferred to the official builds.
+2. You can swap-in any RabbitMQ/PostgreSQL versions, without requiring a new core image.
+3. The size of the core image is greatly reduced:
+
+```console
+$ docker image list
+REPOSITORY                      TAG                  IMAGE ID            CREATED             SIZE
+aiidateam/aiida-core            latest               547a467941da        4 days ago          1.72GB
+chrisjsewell/aiida-core         1.2.1                d21f8a58855e        12 hours ago        482MB
+rabbitmq                        3.8.3-management     867da7fcdf92        4 days ago          181MB
+postgres                        12.3                 adf2b126dda8        9 days ago          313MB
+```
+
+
 
 https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
 
