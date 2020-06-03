@@ -26,10 +26,14 @@ The reasons for this are outlined [here](https://docs.docker.com/config/containe
 $ docker image list
 REPOSITORY                      TAG                  IMAGE ID            CREATED             SIZE
 aiidateam/aiida-core            latest               547a467941da        4 days ago          1.72GB
+aiidalab/aiidalab-docker-stack  latest               9e1e9a371019        12 hours ago        4.43GB
 chrisjsewell/aiida-core         1.2.1                d21f8a58855e        12 hours ago        482MB
 rabbitmq                        3.8.3-management     867da7fcdf92        4 days ago          181MB
 postgres                        12.3                 adf2b126dda8        9 days ago          313MB
+chrisjsewell/quantum-espresso   qe-6.5-pw            7553db6a0972        9 days ago          277MB
 ```
+
+\* aiidalab-docker-stack include quantum espresso
 
 ## Using the system: basic
 
