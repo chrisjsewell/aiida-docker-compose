@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        requirements: ["1.2.1"]
+        requirements: ["1.2.1", "1.2.1-atomic", "qe-3.0.0"]
       fail-fast: false
 
     steps:
