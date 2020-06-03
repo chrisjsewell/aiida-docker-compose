@@ -17,9 +17,10 @@ jobs:
         requirements: ["1.2.1", "1.2.1-atomic", "qe-3.0.0"]
       fail-fast: false
 
+    # currently based on https://github.com/docker/build-push-action/issues/50
+    # TODO use buildkit: https://dev.to/pst418/speed-up-multi-stage-docker-builds-in-ci-cd-with-buildkit-s-registry-cache-11gi
     steps:
     - uses: actions/checkout@master
-    # https://github.com/docker/build-push-action/issues/50
     - name: login to docker hub
       run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
     - name: Pull cache (compile)
@@ -48,4 +49,47 @@ jobs:
         tags: ${{ matrix.requirements }}
         build_args: "REQUIREMENTS=${{ matrix.requirements }}"
         cache_froms: "chrisjsewell/aiida-core-compile:${{ matrix.requirements }},chrisjsewell/aiida-core:${{ matrix.requirements }}"
+        target: build-image
+
+  build-qe:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        qe_version: ["qe-6.5"]
+        qe_make: ["pw", "pwall"]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@master
+    - name: login to docker hub
+      run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
+    - name: Pull cache (compile)
+      run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.requirements }} || true
+    - name: Publish to Registry
+      uses: docker/build-push-action@v1
+      with:
+        path: builds/quantum-espresso/
+        dockerfile: builds/quantum-espresso/Dockerfile
+        repository: chrisjsewell/quantum-espresso-compile
+        username: chrisjsewell
+        password: ${{ secrets.DOCKER_HUB }}
+        tags: ${{ matrix.qe_version }}-${{ matrix.qe_make }}
+        build_args: "QE_GIT_TAG=${{ matrix.qe_version }},QE_MAKE=${{ matrix.qe_make }}"
+        cache_froms: "chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }}"
+        target: compile-image
+    - name: Pull cache (build)
+      run: docker pull chrisjsewell/quantum-espresso:${{ matrix.requirements }} || true
+    - uses: docker/build-push-action@v1
+      with:
+        path: builds/quantum-espresso/
+        dockerfile: builds/quantum-espresso/Dockerfile
+        repository: chrisjsewell/quantum-espresso
+        username: chrisjsewell
+        password: ${{ secrets.DOCKER_HUB }}
+        tags: ${{ matrix.qe_version }}-${{ matrix.qe_make }}
+        build_args: "QE_GIT_TAG=${{ matrix.qe_version }},QE_MAKE=${{ matrix.qe_make }}"
+        cache_froms: "chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }},chrisjsewell/quantum-espresso:${{ matrix.qe_version }}-${{ matrix.qe_make }}}"
         target: build-image
