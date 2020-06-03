@@ -19,6 +19,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+    # https://github.com/docker/build-push-action/issues/50
+    - name: login to docker hub
+      run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
+    - name: Pull cache (compile)
+      run: docker pull chrisjsewell/aiida-core-compile:${{ matrix.requirements }} || true
     - name: Publish to Registry
       uses: docker/build-push-action@v1
       with:
@@ -31,3 +36,16 @@ jobs:
         build_args: "REQUIREMENTS=${{ matrix.requirements }}"
         cache_froms: "chrisjsewell/aiida-core-compile:${{ matrix.requirements }}"
         target: compile-image
+    - name: Pull cache (build)
+      run: docker pull chrisjsewell/aiida-core:${{ matrix.requirements }} || true
+    - uses: docker/build-push-action@v1
+      with:
+        path: builds/aiida-core/
+        dockerfile: builds/aiida-core/Dockerfile
+        repository: chrisjsewell/aiida-core
+        username: chrisjsewell
+        password: ${{ secrets.DOCKER_HUB }}
+        tags: ${{ matrix.requirements }}
+        build_args: "REQUIREMENTS=${{ matrix.requirements }}"
+        cache_froms: "chrisjsewell/aiida-core-compile:${{ matrix.requirements }},chrisjsewell/aiida-core:${{ matrix.requirements }}"
+        target: build-image
