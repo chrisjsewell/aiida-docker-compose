@@ -67,7 +67,7 @@ jobs:
     - name: login to docker hub
       run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
     - name: Pull cache (compile)
-      run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.requirements }} || true
+      run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
     - name: Publish to Registry
       uses: docker/build-push-action@v1
       with:
@@ -81,7 +81,7 @@ jobs:
         cache_froms: "chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }}"
         target: compile-image
     - name: Pull cache (build)
-      run: docker pull chrisjsewell/quantum-espresso:${{ matrix.requirements }} || true
+      run: docker pull chrisjsewell/quantum-espresso:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
     - uses: docker/build-push-action@v1
       with:
         path: builds/quantum-espresso/
