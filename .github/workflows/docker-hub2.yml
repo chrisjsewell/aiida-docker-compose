@@ -1,0 +1,33 @@
+name: Publish Docker
+
+on:
+  push:
+    tags:
+    - 'docker-test-v*'
+
+jobs:
+
+  build-aiida-core:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        requirements: ["1.2.1"]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Publish to Registry
+      uses: docker/build-push-action@v1
+      with:
+        path: builds/aiida-core/
+        dockerfile: builds/aiida-core/Dockerfile
+        repository: chrisjsewell/aiida-core-compile
+        username: chrisjsewell
+        password: ${{ secrets.DOCKER_HUB }}
+        tags: ${{ matrix.requirements }}
+        build_args: "REQUIREMENTS=${{ matrix.requirements }}"
+        cache_froms: "chrisjsewell/aiida-core-compile:${{ matrix.requirements }}"
+        target: compile-image
