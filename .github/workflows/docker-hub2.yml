@@ -27,8 +27,8 @@ jobs:
       run: docker pull chrisjsewell/aiida-core-compile:${{ matrix.requirements }} || true
     - name: Build and push image (compile)
       uses: docker/build-push-action@v1
-      env:
-          DOCKER_BUILDKIT: 1
+      # env:
+      #     DOCKER_BUILDKIT: 1
       with:
         path: builds/aiida-core/
         dockerfile: builds/aiida-core/Dockerfile
@@ -43,8 +43,8 @@ jobs:
       run: docker pull chrisjsewell/aiida-core:${{ matrix.requirements }} || true
     - name: Build and push image (main)
       uses: docker/build-push-action@v1
-      env:
-          DOCKER_BUILDKIT: 1
+      # env:
+      #     DOCKER_BUILDKIT: 1
       with:
         path: builds/aiida-core/
         dockerfile: builds/aiida-core/Dockerfile
@@ -73,10 +73,10 @@ jobs:
       run: echo ${{ secrets.DOCKER_HUB }} | docker login --username chrisjsewell --password-stdin
     - name: Pull cache (compile)
       run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
-    - name: Build and push image (comile)
+    - name: Build and push image (compile)
       uses: docker/build-push-action@v1
-      env:
-          DOCKER_BUILDKIT: 1
+      # env:
+      #     DOCKER_BUILDKIT: 1
       with:
         path: builds/quantum-espresso/
         dockerfile: builds/quantum-espresso/Dockerfile
@@ -91,8 +91,8 @@ jobs:
       run: docker pull chrisjsewell/quantum-espresso:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
     - name: Build and push image (main)
       uses: docker/build-push-action@v1
-      env:
-          DOCKER_BUILDKIT: 1
+      # env:
+      #     DOCKER_BUILDKIT: 1
       with:
         path: builds/quantum-espresso/
         dockerfile: builds/quantum-espresso/Dockerfile
