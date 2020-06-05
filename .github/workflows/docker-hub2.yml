@@ -40,6 +40,8 @@ jobs:
     - name: Pull cache (build)
       run: docker pull chrisjsewell/aiida-core:${{ matrix.requirements }} || true
     - uses: docker/build-push-action@v1
+      env:
+          DOCKER_BUILDKIT: 1
       with:
         path: builds/aiida-core/
         dockerfile: builds/aiida-core/Dockerfile
@@ -70,6 +72,8 @@ jobs:
       run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
     - name: Publish to Registry
       uses: docker/build-push-action@v1
+      env:
+          DOCKER_BUILDKIT: 1
       with:
         path: builds/quantum-espresso/
         dockerfile: builds/quantum-espresso/Dockerfile
