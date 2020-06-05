@@ -22,11 +22,13 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: login to docker hub
-      run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
+      run: echo ${{ secrets.DOCKER_HUB }} | docker login --username chrisjsewell --password-stdin
     - name: Pull cache (compile)
       run: docker pull chrisjsewell/aiida-core-compile:${{ matrix.requirements }} || true
-    - name: Publish to Registry
+    - name: Build and push image (compile)
       uses: docker/build-push-action@v1
+      env:
+          DOCKER_BUILDKIT: 1
       with:
         path: builds/aiida-core/
         dockerfile: builds/aiida-core/Dockerfile
@@ -37,9 +39,10 @@ jobs:
         build_args: "REQUIREMENTS=${{ matrix.requirements }}"
         cache_froms: "chrisjsewell/aiida-core-compile:${{ matrix.requirements }}"
         target: compile-image
-    - name: Pull cache (build)
+    - name: Pull cache (main)
       run: docker pull chrisjsewell/aiida-core:${{ matrix.requirements }} || true
-    - uses: docker/build-push-action@v1
+    - name: Build and push image (main)
+      uses: docker/build-push-action@v1
       env:
           DOCKER_BUILDKIT: 1
       with:
@@ -67,10 +70,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: login to docker hub
-      run: docker login -u chrisjsewell -p ${{ secrets.DOCKER_HUB }}
+      run: echo ${{ secrets.DOCKER_HUB }} | docker login --username chrisjsewell --password-stdin
     - name: Pull cache (compile)
       run: docker pull chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
-    - name: Publish to Registry
+    - name: Build and push image (comile)
       uses: docker/build-push-action@v1
       env:
           DOCKER_BUILDKIT: 1
@@ -84,9 +87,12 @@ jobs:
         build_args: "QE_GIT_TAG=${{ matrix.qe_version }},QE_MAKE=${{ matrix.qe_make }}"
         cache_froms: "chrisjsewell/quantum-espresso-compile:${{ matrix.qe_version }}-${{ matrix.qe_make }}"
         target: compile-image
-    - name: Pull cache (build)
+    - name: Pull cache (main)
       run: docker pull chrisjsewell/quantum-espresso:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
+    - name: Build and push image (main)
     - uses: docker/build-push-action@v1
+      env:
+          DOCKER_BUILDKIT: 1
       with:
         path: builds/quantum-espresso/
         dockerfile: builds/quantum-espresso/Dockerfile
