@@ -90,7 +90,7 @@ jobs:
     - name: Pull cache (main)
       run: docker pull chrisjsewell/quantum-espresso:${{ matrix.qe_version }}-${{ matrix.qe_make }} || true
     - name: Build and push image (main)
-    - uses: docker/build-push-action@v1
+      uses: docker/build-push-action@v1
       env:
           DOCKER_BUILDKIT: 1
       with:
