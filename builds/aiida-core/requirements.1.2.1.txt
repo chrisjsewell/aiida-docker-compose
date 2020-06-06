@@ -19,7 +19,7 @@ click==7.1.2              # via aiida-core, click-completion, click-config-file,
 configobj==5.0.6          # via click-config-file
 cryptography==2.9.2       # via paramiko
 decorator==4.4.2          # via ipython, traitlets
-django==2.2.12            # via aiida-core
+django==2.2.13            # via aiida-core
 ete3==3.1.1               # via aiida-core
 frozendict==1.2           # via plumpy
 furl==2.1.0               # via topika
