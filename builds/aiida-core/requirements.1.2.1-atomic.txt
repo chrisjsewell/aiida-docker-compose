@@ -19,7 +19,7 @@ click-config-file==0.5.0  # via aiida-core
 click-spinner==0.1.10     # via aiida-core
 click==7.1.2              # via aiida-core, click-completion, click-config-file, pgsu, reentry
 configobj==5.0.6          # via click-config-file
-cryptography==2.9.2       # via paramiko
+cryptography==3.2       # via paramiko
 cycler==0.10.0            # via matplotlib
 dataclasses==0.7          # via pymatgen
 decorator==4.4.2          # via ipython, networkx, traitlets
