@@ -27,7 +27,7 @@ graphviz==0.14            # via aiida-core
 ipython-genutils==0.2.0   # via traitlets
 ipython==7.14.0           # via aiida-core
 jedi==0.17.0              # via ipython
-jinja2==2.11.2            # via aiida-core, click-completion
+jinja2==2.11.3            # via aiida-core, click-completion
 kiwipy[rmq]==0.5.3        # via aiida-core, plumpy
 mako==1.1.2               # via alembic
 markupsafe==1.1.1         # via jinja2, mako
