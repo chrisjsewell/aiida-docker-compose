@@ -73,7 +73,7 @@ pyparsing==2.4.7          # via matplotlib, packaging
 python-dateutil==2.8.1    # via aiida-core, alembic, matplotlib, pandas
 python-editor==1.0.4      # via alembic
 pytz==2019.3              # via aiida-core, django, pandas, tzlocal
-pyyaml==5.1.2             # via aiida-core, kiwipy, plumpy
+pyyaml==5.4             # via aiida-core, kiwipy, plumpy
 pyzmq==19.0.1             # via circus
 qe-tools==1.1.3           # via aiida-quantumespresso
 reentry==1.3.1            # via aiida-core
