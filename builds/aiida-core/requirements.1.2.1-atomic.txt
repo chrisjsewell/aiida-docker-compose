@@ -92,6 +92,6 @@ tornado==4.5.3            # via aiida-core, circus, kiwipy, plumpy, topika
 traitlets==4.3.3          # via ipython
 tzlocal==2.1              # via aiida-core
 upf-to-json==0.9.2        # via aiida-core
-urllib3==1.25.9           # via requests
+urllib3==1.26.5           # via requests
 wcwidth==0.1.9            # via prompt-toolkit
 wrapt==1.11.2             # via aiida-core
