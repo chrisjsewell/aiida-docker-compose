@@ -23,7 +23,7 @@ cryptography==2.9.2       # via paramiko
 cycler==0.10.0            # via matplotlib
 dataclasses==0.7          # via pymatgen
 decorator==4.4.2          # via ipython, networkx, traitlets
-django==2.2.12            # via aiida-core
+django==2.2.21            # via aiida-core
 ete3==3.1.1               # via aiida-core
 frozendict==1.2           # via plumpy
 furl==2.1.0               # via topika
