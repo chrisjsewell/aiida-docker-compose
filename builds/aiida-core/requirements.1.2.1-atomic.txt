@@ -46,7 +46,7 @@ numpy==1.17.5             # via aiida-core, ase, matplotlib, pandas, pymatgen, s
 orderedmultidict==1.0.1   # via furl
 palettable==3.3.0         # via pymatgen
 pandas==1.0.3             # via pymatgen
-paramiko==2.7.1           # via aiida-core
+paramiko==2.10.1           # via aiida-core
 parso==0.7.0              # via jedi
 pexpect==4.8.0            # via ipython
 pgsu==0.1.0               # via aiida-core
