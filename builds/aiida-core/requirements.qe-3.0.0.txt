@@ -40,7 +40,7 @@ jedi==0.17.0              # via ipython
 jinja2==2.11.2            # via aiida-core, click-completion
 kiwipy[rmq]==0.5.3        # via aiida-core, plumpy
 kiwisolver==1.2.0         # via matplotlib
-mako==1.1.2               # via alembic
+mako==1.2.2               # via alembic
 markupsafe==1.1.1         # via jinja2, mako
 matplotlib==3.2.1         # via ase, pymatgen
 monty==3.0.2              # via pymatgen
