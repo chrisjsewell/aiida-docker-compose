@@ -10,7 +10,7 @@ alembic==1.4.2            # via aiida-core
 ase==3.19.1               # via aiida-core
 backcall==0.1.0           # via ipython
 bcrypt==3.1.7             # via paramiko
-certifi==2020.4.5.1       # via requests
+certifi==2022.12.7       # via requests
 cffi==1.14.0              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 circus==0.16.1            # via aiida-core
